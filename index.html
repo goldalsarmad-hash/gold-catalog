@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مجوهرات السرمد - عيار 9</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A84C; --gold-light: #E8C97A; --gold-dark: #9A7A2E;
+    --navy: #0D1B2A; --navy-mid: #1A2F45; --navy-light: #243850;
+    --cream: #F5EDD6; --white: #FFFFFF;
+    --whatsapp: #25D366; --facebook: #1877F2; --insta: #E4405F;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Tajawal', sans-serif; background: var(--navy); color: var(--cream); min-height: 100vh; padding-bottom: 140px; }
+  header { position: sticky; top: 0; z-index: 100; background: rgba(13,27,42,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(201,168,76,0.2); padding: 15px; text-align: center; }
+  .brand-name { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--gold-light); letter-spacing: 1px; }
+  .hero { text-align: center; padding: 30px 20px; }
+  .hero h1 { font-size: 1.8rem; color: var(--gold-light); margin-bottom: 5px; }
+  .hero p { color: rgba(245,237,214,0.6); font-size: 0.9rem; }
+  .filters { display: flex; gap: 8px; overflow-x: auto; padding: 10px 15px; justify-content: center; }
+  .filter-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--gold); color: var(--gold-light); padding: 8px 18px; border-radius: 20px; cursor: pointer; font-size: 0.85rem; white-space: nowrap; transition: 0.3s; }
+  .filter-btn.active { background: var(--gold); color: var(--navy); font-weight: bold; }
+  .catalog-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 15px; max-width: 900px; margin: 0 auto; }
+  .product-card { background: var(--navy-mid); border: 1px solid rgba(201,168,76,0.2); border-radius: 12px; overflow: hidden; position: relative; transition: 0.3s; cursor: pointer; }
+  .product-card.selected { border: 2px solid var(--gold-light); background: var(--navy-light); transform: scale(0.97); }
+  .card-img-wrap { aspect-ratio: 1; background: #000; position: relative; }
+  .card-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
+  .selection-overlay { position: absolute; inset: 0; background: rgba(201, 168, 76, 0.3); display: none; align-items: center; justify-content: center; font-size: 2rem; }
+  .product-card.selected .selection-overlay { display: flex; }
+  .card-body { padding: 12px; }
+  .card-category { font-size: 0.7rem; color: var(--gold); font-weight: bold; }
+  .card-name { font-size: 0.9rem; font-weight: bold; margin: 5px 0; color: var(--white); }
+  .card-details { font-size: 0.8rem; color: rgba(245,237,214,0.7); }
+  .selection-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--navy-mid); border-top: 2px solid var(--gold); padding: 20px; display: none; box-shadow: 0 -10px 30px rgba(0,0,0,0.6); z-index: 1000; animation: slideUp 0.4s ease; }
+  @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+  .selection-info { margin-bottom: 15px; font-weight: bold; text-align: center; color: var(--gold-light); font-size: 1rem; }
+  .contact-buttons { display: flex; gap: 10px; max-width: 600px; margin: 0 auto; }
+  .btn-social { flex: 1; padding: 12px 5px; border-radius: 10px; text-decoration: none; color: white; font-size: 0.85rem; font-weight: bold; text-align: center; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+  .btn-whatsapp { background: var(--whatsapp); }
+  .btn-facebook { background: var(--facebook); }
+  .btn-insta { background: var(--insta); }
+  @media (max-width: 500px) { .contact-buttons { flex-direction: column; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand-name">مجوهرات السرمد</div>
+</header>
+
+<div class="hero">
+  <h1>كتالوج الذهب عيار 9</h1>
+  <p>اختر القطع التي تعجبك وتواصل معنا مباشرة</p>
+</div>
+
+<div class="filters">
+  <button class="filter-btn active" onclick="filterBy('الكل', this)">الكل</button>
+  <button class="filter-btn" onclick="filterBy('محابس', this)">محابس</button>
+  <button class="filter-btn" onclick="filterBy('حلق', this)">حلق</button>
+  <button class="filter-btn" onclick="filterBy('تراجي', this)">تراجي</button>
+</div>
+
+<div class="catalog-grid" id="catalogGrid"></div>
+
+<div class="selection-bar" id="selectionBar">
+  <div class="selection-info" id="selectionCount">تم اختيار 0 قطع</div>
+  <div class="contact-buttons">
+    <a href="#" class="btn-social btn-whatsapp" onclick="sendOrder('wa')">واتساب</a>
+    <a href="#" class="btn-social btn-facebook" onclick="sendOrder('fb')">فيسبوك</a>
+    <a href="#" class="btn-social btn-insta" onclick="sendOrder('ig')">إنستغرام</a>
+  </div>
+</div>
+
+<script>
+// --- معلوماتك الحقيقية ---
+const MY_PHONE = "9647713763001";
+const FB_LINK = "https://www.facebook.com/share/18kZuu9mkd/?mibextid=wwXIfr";
+const IG_LINK = "https://www.instagram.com/gold_alsarmad?igsh=MWNiMHE4cmN5eHowZQ%3D%3D&utm_source=qr";
+
+// --- قائمة الـ 50 قطعة (أضف روابط صورك هنا) ---
+const products = [
+  { id: 1, name: "محبس موديل 1", category: "محابس", weight: "2.5غ", size: "17", img: "https://via.placeholder.com/400?text=Sarmad+Gold" },
+  { id: 2, name: "محبس موديل 2", category: "محابس", weight: "3.1غ", size: "18", img: "https://via.placeholder.com/400?text=Sarmad+Gold" },
+  { id: 3, name: "حلق كلاسيك", category: "حلق", weight: "1.8غ", size: "وسط", img: "https://via.placeholder.com/400?text=Sarmad+Gold" },
+  { id: 4, name: "تراجي ناعمة", category: "تراجي", weight: "4.2غ", img: "https://via.placeholder.com/400?text=Sarmad+Gold" },
+  // أضف البقية هنا بنفس الطريقة...
+];
+
+let selectedIds = new Set();
+let currentFilter = 'الكل';
+
+function renderProducts(filter = 'الكل') {
+  const grid = document.getElementById('catalogGrid');
+  grid.innerHTML = '';
+  const filtered = products.filter(p => filter === 'الكل' || p.category === filter);
+
+  filtered.forEach(p => {
+    const isSelected = selectedIds.has(p.id);
+    const detailText = p.category === 'تراجي' ? `الوزن: ${p.weight}` : `الوزن: ${p.weight} | القياس: ${p.size}`;
+    const card = document.createElement('div');
+    card.className = `product-card ${isSelected ? 'selected' : ''}`;
+    card.onclick = () => toggleSelect(p.id);
+    card.innerHTML = `
+      <div class="card-img-wrap"><img src="${p.img}"><div class="selection-overlay">✔️</div></div>
+      <div class="card-body">
+        <div class="card-category">${p.category} - عيار 9</div>
+        <div class="card-name">${p.name}</div>
+        <div class="card-details">${detailText}</div>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+
+function toggleSelect(id) {
+  selectedIds.has(id) ? selectedIds.delete(id) : selectedIds.add(id);
+  document.getElementById('selectionBar').style.display = selectedIds.size > 0 ? 'block' : 'none';
+  document.getElementById('selectionCount').innerText = `تم اختيار ${selectedIds.size} قطع`;
+  renderProducts(currentFilter);
+}
+
+function filterBy(cat, btn) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderProducts(cat);
+}
+
+function sendOrder(type) {
+  let message = "أهلاً مجوهرات السرمد، أريد الاستفسار عن هذه القطع:\n\n";
+  products.filter(p => selectedIds.has(p.id)).forEach(p => {
+    message += `- ${p.name} (${p.category})\n  الوزن: ${p.weight} ${p.size ? '| القياس: ' + p.size : ''}\n---\n`;
+  });
+
+  if (type === 'wa') window.open(`https://wa.me/${MY_PHONE}?text=${encodeURIComponent(message)}`, '_blank');
+  else if (type === 'fb') window.open(FB_LINK, '_blank');
+  else if (type === 'ig') window.open(IG_LINK, '_blank');
+}
+
+renderProducts();
+</script>
+</body>
+</html>
