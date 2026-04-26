@@ -1,59 +1,238 @@
-<!DOCTYPE html>  
-<html lang="ar" dir="rtl">  
-<head>  
-<meta charset="UTF-8">  
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">  
-<title>مجوهرات السرمد</title>  
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>مجوهرات السرمد</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Tajawal:wght@200;300;400;500;700;900&display=swap" rel="stylesheet">
-<script>
-/* ═══════════════════════════════════════  
-   تعديلات التوافق مع GITHUB  
+<style>
+/* ═══════════════════════════════════════
+   DESIGN TOKENS - نفس ستايلك الأصلي
 ═══════════════════════════════════════ */
-
-// 1. تعطيل جلب سعر الذهب الخارجي لتجنب مشاكل الـ CORS والـ HTTP على GitHub
-// سيعتمد الموقع الآن على السعر اليدوي الذي تحدده أنت في لوحة التحكم
-async function fetchGoldPrice() {
-    console.log("Gold price API disabled for GitHub compatibility. Using manual price.");
-    return; 
+:root {
+  --primary: #C9A84C;
+  --primary-light: #E8C97A;
+  --primary-dark: #9A7A2E;
+  --bg: #070F1A;
+  --bg-2: #0D1B2A;
+  --text: #F1F1F1;
+  --text-faint: rgba(241,241,241,0.6);
+  --gold-grad: linear-gradient(135deg, #9A7A2E 0%, #C9A84C 50%, #F5E098 100%);
 }
 
-// 2. إصلاح وظيفة فتح لوحة التحكم لضمان عملها في المتصفحات الحديثة
-function openAdmin() {
-    // استخدمنا تأخير بسيط لضمان استجابة المتصفح
-    setTimeout(() => {
-        let pass = prompt("الرجاء إدخال كلمة مرور لوحة التحكم:");
-        if (pass === "9974") {
-            // إظهار لوحة التحكم (تأكد أن الـ ID مطابق لما في كودك)
-            const adminPanel = document.getElementById('adminPage') || document.querySelector('.admin-page');
-            if (adminPanel) {
-                // إخفاء الصفحات الأخرى وإظهار الإدارة
-                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-                adminPanel.classList.add('active');
-                
-                // تفعيل واجهة الإدارة الداخلية
-                const adminMain = document.querySelector('.admin-main');
-                const adminLogin = document.querySelector('.admin-login-wrap');
-                if (adminMain) adminMain.style.display = 'block';
-                if (adminLogin) adminLogin.style.display = 'none';
-            }
-        } else if (pass !== null) {
-            alert("كلمة المرور غير صحيحة");
-        }
-    }, 100);
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font-family: 'Tajawal', sans-serif; overflow-x: hidden;
 }
 
-// 3. تأمين روابط الـ API الأخرى (مثل الواتساب)
-function sendWhatsAppOrder(phone, message) {
-    const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-    window.open(url, '_blank');
-}
-
-/* ═══════════════════════════════════════  
-   ملاحظة لمستخدم GitHub:
-   تأكد أن اسم الملف هو index.html حصراً
+/* ═══════════════════════════════════════
+   LAYOUT & HEADER
 ═══════════════════════════════════════ */
-</script>
+header {
+  padding: 15px 20px; background: rgba(13, 27, 42, 0.9);
+  backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 1000;
+  border-bottom: 1px solid rgba(201,168,76,0.2); text-align: center;
+}
+.logo-area { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--primary); font-weight: 800; letter-spacing: 1px; }
+
+.page { display: none; padding-bottom: 100px; animation: fadeIn 0.3s ease-out; }
+.page.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* ═══════════════════════════════════════
+   PRODUCT GRID
+═══════════════════════════════════════ */
+.container { padding: 15px; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+.card {
+  background: var(--bg-2); border-radius: 12px; overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.05); position: relative;
+}
+.card-img { width: 100%; height: 160px; object-fit: cover; background: #162636; }
+.card-body { padding: 12px; }
+.card-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 5px; }
+.card-meta { font-size: 0.75rem; color: var(--text-faint); margin-bottom: 8px; }
+.card-price { color: var(--primary); font-weight: 800; font-size: 1rem; }
+
+/* ═══════════════════════════════════════
+   ADMIN & FORMS
+═══════════════════════════════════════ */
+.admin-sec { background: var(--bg-2); padding: 20px; border-radius: 15px; margin-bottom: 20px; border: 1px solid var(--primary-dark); }
+input, select, textarea {
+  width: 100%; padding: 12px; margin: 10px 0; background: #1a2a3a;
+  border: 1px solid rgba(201,168,76,0.3); color: white; border-radius: 8px; font-family: 'Tajawal';
+}
+.btn-main {
+  background: var(--gold-grad); color: #000; border: none; padding: 14px;
+  width: 100%; border-radius: 8px; font-weight: 800; cursor: pointer;
+}
+
+/* ═══════════════════════════════════════
+   NAV BAR
+═══════════════════════════════════════ */
+.nav-bar {
+  position: fixed; bottom: 0; width: 100%; background: #0D1B2A;
+  display: flex; justify-content: space-around; padding: 15px 0;
+  border-top: 1px solid var(--primary-dark); z-index: 1000;
+}
+.nav-btn { color: var(--text-faint); font-size: 0.8rem; text-align: center; cursor: pointer; }
+.nav-btn.active { color: var(--primary); font-weight: bold; }
+
+</style>
 </head>
 <body>
-    </body>
+
+<header>
+    <div class="logo-area">مجوهرات السرمد</div>
+</header>
+
+<div id="shopPage" class="page active">
+    <div class="container">
+        <div id="productGrid" class="grid">
+            </div>
+    </div>
+</div>
+
+<div id="adminPage" class="page">
+    <div class="container">
+        <div class="admin-sec">
+            <h3 style="color:var(--primary)">إضافة قطعة جديدة</h3>
+            <input type="text" id="pName" placeholder="اسم القطعة (مثلاً: سوار ذهب ملكي)">
+            <input type="number" id="pWeight" placeholder="الوزن بالغرام">
+            <select id="pKarat">
+                <option value="21">عيار 21</option>
+                <option value="18">عيار 18</option>
+                <option value="24">عيار 24</option>
+            </select>
+            <input type="number" id="pPrice" placeholder="السعر الإجمالي (دينار عراقي)">
+            <input type="text" id="pImg" placeholder="رابط صورة القطعة">
+            <button class="btn-main" onclick="addNewProduct()">نشر القطعة في المتجر</button>
+        </div>
+        
+        <div id="adminList">
+            </div>
+    </div>
+</div>
+
+<div class="nav-bar">
+    <div class="nav-btn active" onclick="switchPage('shopPage', this)">🏠 المتجر</div>
+    <div class="nav-btn" onclick="tryAccessAdmin(this)">⚙️ الإدارة</div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════
+   المنطق البرمجي المحدث
+═══════════════════════════════════════ */
+
+let products = JSON.parse(localStorage.getItem('sarmad_db')) || [];
+
+// وظيفة الدخول الآمن
+function tryAccessAdmin(btn) {
+    const pass = prompt("أدخل كلمة المرور السرية:");
+    if (pass === "9974") {
+        switchPage('adminPage', btn);
+    } else if (pass !== null) {
+        alert("كلمة المرور غير صحيحة!");
+    }
+}
+
+// التبديل بين الصفحات
+function switchPage(pageId, btn) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(pageId).classList.add('active');
+    
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    
+    if(pageId === 'adminPage') renderAdminList();
+    if(pageId === 'shopPage') renderShop();
+}
+
+// إضافة منتج
+function addNewProduct() {
+    const name = document.getElementById('pName').value;
+    const weight = document.getElementById('pWeight').value;
+    const price = document.getElementById('pPrice').value;
+    const img = document.getElementById('pImg').value;
+    const karat = document.getElementById('pKarat').value;
+
+    if (!name || !price) return alert("يرجى إدخال الاسم والسعر");
+
+    const newProd = {
+        id: Date.now(),
+        name,
+        weight,
+        price,
+        img: img || 'https://images.unsplash.com/photo-1611085510592-71050fa5d42c?q=80&w=300&auto=format&fit=crop',
+        karat
+    };
+
+    products.push(newProd);
+    saveData();
+    alert("تمت الإضافة!");
+    // مسح الحقول
+    document.querySelectorAll('.admin-sec input').forEach(i => i.value = '');
+}
+
+function deleteProduct(id) {
+    if (confirm("حذف هذه القطعة؟")) {
+        products = products.filter(p => p.id !== id);
+        saveData();
+        renderAdminList();
+    }
+}
+
+function saveData() {
+    localStorage.setItem('sarmad_db', JSON.stringify(products));
+    renderShop();
+}
+
+// عرض المنتجات للزبائن
+function renderShop() {
+    const grid = document.getElementById('productGrid');
+    if (products.length === 0) {
+        grid.innerHTML = '<p style="grid-column:1/3; text-align:center; padding:40px; color:var(--text-faint)">لا توجد قطع معروضة حالياً</p>';
+        return;
+    }
+
+    grid.innerHTML = products.map(p => `
+        <div class="card">
+            <img src="${p.img}" class="card-img" onerror="this.src='https://via.placeholder.com/300x200?text=Jewelry'">
+            <div class="card-body">
+                <div class="card-title">${p.name}</div>
+                <div class="card-meta">عيار ${p.karat} | وزن ${p.weight}غ</div>
+                <div class="card-price">${Number(p.price).toLocaleString()} د.ع</div>
+                <button onclick="orderViaWA('${p.name}')" style="width:100%; margin-top:10px; background:#25D366; color:white; border:none; padding:8px; border-radius:5px; font-size:0.7rem; font-weight:bold; cursor:pointer">طلب عبر واتساب</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+// عرض قائمة الإدارة للحذف
+function renderAdminList() {
+    const list = document.getElementById('adminList');
+    list.innerHTML = '<h3 style="margin-top:30px">القطع المعروضة حالياً</h3>';
+    list.innerHTML += products.map(p => `
+        <div style="display:flex; justify-content:space-between; align-items:center; background:#1a2a3a; padding:10px; margin-bottom:10px; border-radius:8px; border-right:3px solid var(--primary)">
+            <div>
+                <div style="font-size:0.85rem">${p.name}</div>
+                <div style="font-size:0.7rem; color:var(--primary)">${Number(p.price).toLocaleString()} د.ع</div>
+            </div>
+            <button onclick="deleteProduct(${p.id})" style="background:#ff4444; color:white; border:none; padding:5px 12px; border-radius:5px; font-size:0.7rem">حذف</button>
+        </div>
+    `).join('');
+}
+
+function orderViaWA(name) {
+    const phone = "9647700000000"; // استبدله برقمك الحقيقي
+    const msg = encodeURIComponent(`السلام عليكم، أرغب بالاستفسار عن قطعة: ${name}`);
+    window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
+}
+
+// التشغيل الأولي
+window.onload = renderShop;
+
+</script>
+</body>
 </html>
